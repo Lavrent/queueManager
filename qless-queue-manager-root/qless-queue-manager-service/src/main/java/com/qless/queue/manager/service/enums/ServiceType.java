@@ -1,0 +1,27 @@
+package com.qless.queue.manager.service.enums;
+
+public enum ServiceType {
+    CELL_PHONE_MONTHLY_PAYMENT(1),
+    INTERNET_MONTHLY_PAYMENT(2),
+    CELL_PHONE_REPAIRS(3);
+
+    private int id;
+
+    ServiceType(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public static ServiceType getById(Integer id) {
+        for (ServiceType value : ServiceType.values()) {
+            if (value.getId() == id) {
+                return value;
+            }
+        }
+
+        throw new IllegalArgumentException("Invalid service type id: " + id);
+    }
+}
