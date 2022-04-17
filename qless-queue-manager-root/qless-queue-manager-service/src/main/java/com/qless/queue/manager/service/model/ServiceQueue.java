@@ -1,6 +1,7 @@
 package com.qless.queue.manager.service.model;
 
 import com.qless.queue.manager.service.enums.ServiceType;
+import com.qless.queue.manager.service.enums.ServicerStatus;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -30,5 +31,19 @@ public class ServiceQueue {
             throw new IllegalArgumentException("Current queue does not support service type: " + serviceType
                     + ".\nSupported service types are " + serviceTypes);
         }
+    }
+
+    public void validateCustomers(){
+        if (customers.isEmpty()) {
+            throw new RuntimeException("There is no customer to serve currently");
+        }
+    }
+
+    public Servicer findFirstCustomer() {
+        return servicers
+                .stream()
+                .filter(servicer -> ServicerStatus.FREE.equals(servicer.getStatus()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("All servicers are currently busy"));
     }
 }

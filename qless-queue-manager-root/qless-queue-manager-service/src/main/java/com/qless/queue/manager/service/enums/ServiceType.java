@@ -5,14 +5,10 @@ public enum ServiceType {
     INTERNET_MONTHLY_PAYMENT(2),
     CELL_PHONE_REPAIRS(3);
 
-    private int id;
+    private final int id;
 
     ServiceType(int id) {
         this.id = id;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public static ServiceType getById(Integer id) {
@@ -23,5 +19,14 @@ public enum ServiceType {
         }
 
         throw new IllegalArgumentException("Invalid service type id: " + id);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return name().toLowerCase();
     }
 }

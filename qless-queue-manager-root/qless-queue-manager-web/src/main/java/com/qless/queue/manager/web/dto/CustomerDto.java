@@ -6,7 +6,7 @@ import lombok.NonNull;
 
 @Getter
 @Builder
-public class Customer {
+public class CustomerDto {
     @NonNull
     private Integer id;
     @NonNull
