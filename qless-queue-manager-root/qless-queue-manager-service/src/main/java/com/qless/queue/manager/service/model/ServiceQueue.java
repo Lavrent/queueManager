@@ -39,7 +39,7 @@ public class ServiceQueue {
         }
     }
 
-    public Servicer findFirstCustomer() {
+    public Servicer findFreeServicer() {
         return servicers
                 .stream()
                 .filter(servicer -> ServicerStatus.FREE.equals(servicer.getStatus()))

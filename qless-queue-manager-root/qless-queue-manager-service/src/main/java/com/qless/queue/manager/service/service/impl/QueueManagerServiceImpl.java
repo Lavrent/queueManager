@@ -1,5 +1,6 @@
 package com.qless.queue.manager.service.service.impl;
 
+import com.qless.queue.manager.service.configuration.QueueManagerConfiguration;
 import com.qless.queue.manager.service.enums.ServiceType;
 import com.qless.queue.manager.service.enums.ServicerStatus;
 import com.qless.queue.manager.service.model.Customer;
@@ -7,10 +8,10 @@ import com.qless.queue.manager.service.model.ServiceQueue;
 import com.qless.queue.manager.service.model.ServiceTypeQueueReport;
 import com.qless.queue.manager.service.model.Servicer;
 import com.qless.queue.manager.service.service.QueueManagerService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -18,24 +19,10 @@ import java.util.Map.Entry;
 import static java.util.stream.Collectors.groupingBy;
 
 @Slf4j
+@AllArgsConstructor
 @Service
 public class QueueManagerServiceImpl implements QueueManagerService {
-    private static final Map<Integer, ServiceQueue> queueMap = Map.of(1, ServiceQueue.builder()
-                    .customers(new LinkedList<>())
-                    .serviceTypes(List.of(
-                            ServiceType.CELL_PHONE_MONTHLY_PAYMENT,
-                            ServiceType.INTERNET_MONTHLY_PAYMENT))
-                    .servicers(List.of(
-                            Servicer.builder().id(1).name("Servicer1").build(),
-                            Servicer.builder().id(2).name("Servicer2").build()))
-                    .build(),
-            2, ServiceQueue.builder()
-                    .customers(new LinkedList<>())
-                    .serviceTypes(List.of(ServiceType.CELL_PHONE_REPAIRS))
-                    .servicers(List.of(
-                            Servicer.builder().id(3).name("Servicer3").build(),
-                            Servicer.builder().id(4).name("Servicer4").build()))
-                    .build());
+    private QueueManagerConfiguration queueManagerConfiguration;
 
     @Override
     public void addCustomerToQueue(Integer queueId, Customer customer) {
@@ -89,7 +76,7 @@ public class QueueManagerServiceImpl implements QueueManagerService {
         ServiceQueue serviceQueue = findQueueById(queueId);
         serviceQueue.validateCustomers();
 
-        Servicer freeServicer = serviceQueue.findFirstCustomer();
+        Servicer freeServicer = serviceQueue.findFreeServicer();
 
         freeServicer.changeStatus(ServicerStatus.BUSY);
         Customer customer = serviceQueue.getCustomers().poll();
@@ -106,6 +93,7 @@ public class QueueManagerServiceImpl implements QueueManagerService {
     }
 
     private ServiceQueue findQueueById(Integer queueId) {
+        Map<Integer, ServiceQueue> queueMap = queueManagerConfiguration.queueMap();
         if (!queueMap.containsKey(queueId)) {
             throw new IllegalArgumentException("Queue with such id does not exist");
         }
