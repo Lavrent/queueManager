@@ -2,6 +2,8 @@ package com.qless.queue.manager.service.model;
 
 import com.qless.queue.manager.service.enums.ServiceType;
 import com.qless.queue.manager.service.enums.ServicerStatus;
+import com.qless.queue.manager.service.exception.CustomerAlreadyExistsException;
+import com.qless.queue.manager.service.exception.NotFoundException;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -19,7 +21,7 @@ public class ServiceQueue {
         if (customers.stream()
                 .map(Customer::getId)
                 .anyMatch(id -> id.equals(customer.getId()))) {
-            throw new IllegalArgumentException("Customer with this id already exists in queue");
+            throw new CustomerAlreadyExistsException("Customer with this id already exists in queue");
         }
 
         customers.add(customer);
@@ -35,7 +37,7 @@ public class ServiceQueue {
 
     public void validateCustomers(){
         if (customers.isEmpty()) {
-            throw new RuntimeException("There is no customer to serve currently");
+            throw new NotFoundException("There is no customer to serve currently");
         }
     }
 
@@ -44,6 +46,6 @@ public class ServiceQueue {
                 .stream()
                 .filter(servicer -> ServicerStatus.FREE.equals(servicer.getStatus()))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("All servicers are currently busy"));
+                .orElseThrow(() -> new NotFoundException("All servicers are currently busy"));
     }
 }
