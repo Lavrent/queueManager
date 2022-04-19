@@ -1,0 +1,3 @@
+rootProject.name = 'qless-queue-manager-root'
+include 'qless-queue-manager-web'
+include 'qless-queue-manager-service'
