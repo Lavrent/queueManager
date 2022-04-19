@@ -32,6 +32,8 @@ public class QueueManagerController {
     @PostMapping("customers")
     public ResponseEntity<?> addCustomerToQueue(@PathVariable Integer queueId, @RequestBody CustomerDto customerDto) {
         Assert.notNull(queueId, "queueId cannot be null");
+        Assert.isTrue(queueId > 0, "queueId should be positive");
+
         Assert.notNull(customerDto, "customerDto cannot be null");
         Customer customer = mapToCustomer(customerDto);
 
@@ -51,6 +53,9 @@ public class QueueManagerController {
 
     @GetMapping
     public ServiceQueueDto getQueue(@PathVariable Integer queueId) {
+        Assert.notNull(queueId, "queueId cannot be null");
+        Assert.isTrue(queueId > 0, "queueId should be positive");
+
         ServiceQueue queue = queueManagerService.getQueue(queueId);
 
         return ServiceQueueDto.builder()
@@ -79,6 +84,11 @@ public class QueueManagerController {
 
     @GetMapping("serviceTypes/{serviceTypeId}")
     public List<CustomerDto> getQueueByServiceType(@PathVariable Integer queueId, @PathVariable Integer serviceTypeId) {
+        Assert.notNull(queueId, "queueId cannot be null");
+        Assert.isTrue(queueId > 0, "queueId should be positive");
+        Assert.notNull(serviceTypeId, "serviceTypeId cannot be null");
+        Assert.isTrue(serviceTypeId > 0, "serviceTypeId should be positive");
+
         return queueManagerService.getQueueByServiceTypeId(queueId, serviceTypeId)
                 .stream()
                 .map(this::mapToCustomerDto)
@@ -95,6 +105,9 @@ public class QueueManagerController {
 
     @GetMapping("report/serviceTypes")
     public List<ServiceTypeQueueReportDto> getServiceTypeQueueReport(@PathVariable Integer queueId) {
+        Assert.notNull(queueId, "queueId cannot be null");
+        Assert.isTrue(queueId > 0, "queueId should be positive");
+
         List<ServiceTypeQueueReport> serviceTypeQueueReports = queueManagerService.getServiceTypeQueueReport(queueId);
         return serviceTypeQueueReports.stream()
                 .map(this::mapToServiceTypeQueueReportDto)
@@ -110,6 +123,9 @@ public class QueueManagerController {
 
     @PostMapping("customers/summon")
     public void summonCustomer(@PathVariable Integer queueId) {
+        Assert.notNull(queueId, "queueId cannot be null");
+        Assert.isTrue(queueId > 0, "queueId should be positive");
+
         queueManagerService.summonCustomer(queueId);
     }
 }
